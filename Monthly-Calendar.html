@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Monthly Calendar</title>
+    <style>
+        .prev-month, .next-month {
+            color: #CCC
+        }
+
+        .today {
+            font-weight: bold;
+            background: #DDD;
+        }
+
+        .title {
+            background: #AAAAFF;
+            margin: 10px 0;
+            padding: 5px
+        }
+
+        table {
+            border: 1px solid #CCC;
+        }
+
+        td {
+            text-align: center;
+        }
+
+        #calendarCode {
+            width: 100%;
+        }
+    </style>
+    <script>
+        function calendar([day, month, year]) {
+            day = parseInt(day);
+            month = parseInt(month);
+            year = parseInt(year);
+
+            let html = "<table>\n";
+
+            html += "\t<tr><th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr>\n";
+            html += "\t<tr>";
+
+
+            let date = new Date(year, month - 1, 1);
+            if (date.getDay() !== 0) {
+                let prevMonth = new Date(year, month - 1, -(date.getDay()) + 1);
+                while (prevMonth.getMonth() !== month - 1) {
+                    html += `<td class="prev-month">${prevMonth.getDate()}</td>`;
+                    prevMonth.setDate(prevMonth.getDate() + 1);
+                }
+            }
+
+            if(date.getMonth() !== 11) {
+                let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+                while (date.getMonth() !== month) {
+                    if (date.getDate() === day) {
+                        html += `<td class="today">${date.getDate()}</td>`;
+                    } else {
+                        html += `<td>${date.getDate()}</td>`;
+                    }
+                    if (date.getDay() === 6 && date.getDate() !== lastDay.getDate()) {
+                        html += '</tr>\n\t<tr>'
+                    }
+                    date.setDate(date.getDate() + 1);
+                }
+                if (date.getDay() !== 0) {
+                    let nextMonth = new Date(year, month, 1);
+                    while (nextMonth.getDay() !== 0) {
+                        html += `<td class="next-month">${nextMonth.getDate()}</td>`;
+                        nextMonth.setDate(nextMonth.getDate() + 1);
+                    }
+                }
+            } else {
+                let lastDay = new Date(date.getFullYear(), 11, 31);
+                while (date.getMonth() !== 0) {
+                    if (date.getDate() === day) {
+                        html += `<td class="today">${date.getDate()}</td>`;
+                    } else {
+                        html += `<td>${date.getDate()}</td>`;
+                    }
+                    if (date.getDay() === 6 && date.getDate() !== lastDay.getDate()) {
+                        html += '</tr>\n\t<tr>'
+                    }
+                    date.setDate(date.getDate() + 1);
+                }
+                if (date.getDay() !== 0) {
+                    let nextMonth = new Date(year + 1, 0, 1);
+                    while (nextMonth.getDay() !== 0) {
+                        html += `<td class="next-month">${nextMonth.getDate()}</td>`;
+                        nextMonth.setDate(nextMonth.getDate() + 1);
+                    }
+                }
+            }
+
+            html += "</tr>\n</table>";
+            return html;
+        }
+    </script>
+</head>
+
+<body>
+Day: <input id="day" type="number" value="4"/>
+Month: <input id="month" type="number" value="9"/>
+Year: <input id="year" type="number" value="2016"/>
+<input type="button" value="Show"
+       onclick="let calendarHTML =
+            calendar([document.getElementById('day').value,
+                document.getElementById('month').value,
+                document.getElementById('year').value]);
+            document.getElementById('calendar').innerHTML = calendarHTML;
+            document.getElementById('calendarCode').innerText = calendarHTML"/>
+<div class="title">Calendar:</div>
+<div id="calendar">Calendar will be shown here</div>
+<div class="title">HTML:</div>
+<textarea rows="12" id="calendarCode"></textarea>
+</body>
+
+</html>
